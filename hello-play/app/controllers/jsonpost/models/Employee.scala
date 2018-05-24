@@ -1,4 +1,4 @@
-package models
+package controllers.jsonpost.models
 
 import play.api.libs.json.{JsValue, Json}
 

@@ -5,8 +5,8 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
-POST    /employee/update            controllers.EmployeeController.update
-GET     /employee/:name             controllers.EmployeeController.employee(name: String)
+POST    /employee/update            controllers.jsonpost.EmployeeController.update
+GET     /employee/:name             controllers.jsonpost.EmployeeController.employee(name: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

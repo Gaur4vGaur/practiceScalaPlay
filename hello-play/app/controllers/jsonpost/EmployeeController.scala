@@ -1,7 +1,7 @@
-package controllers
+package controllers.jsonpost
 
+import controllers.jsonpost.models.Employee
 import javax.inject._
-import models.Employee
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
 
