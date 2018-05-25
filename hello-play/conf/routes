@@ -8,5 +8,8 @@ GET     /                           controllers.HomeController.index
 POST    /employee/update            controllers.jsonpost.EmployeeController.update
 GET     /employee/:name             controllers.jsonpost.EmployeeController.employee(name: String)
 
+GET     /employee-form              controllers.forms.EmployeeController.employeeDetails
+POST    /employee-form/submission   controllers.forms.EmployeeController.employeeDetailsSubmission
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

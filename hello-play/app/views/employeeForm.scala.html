@@ -1,7 +1,13 @@
 @import controllers.forms.models.Employee
 
-@(form: Form[Employee])
+@(form: Form[Employee])(implicit messages: MessagesProvider)
 
 @main("Welcome to Play") {
   <h1>Welcome to Play!</h1>
+
+  @helper.form(action = controllers.forms.routes.EmployeeController.employeeDetailsSubmission()) {
+    @helper.inputText(form("name"))
+    @helper.inputText(form("age"))
+    <input type="submit" value="Submit">
+  }
 }
