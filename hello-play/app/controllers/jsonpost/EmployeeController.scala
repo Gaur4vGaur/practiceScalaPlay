@@ -32,6 +32,7 @@ class EmployeeController @Inject()(cc: ControllerComponents) extends AbstractCon
   def update = Action.async(parse.json) {
     implicit request: Request[JsValue] =>
       val employee = request.body.as[Employee]
+      println(employee)
       Future.successful(Ok(employee.name + " " + employee.id))
   }
 

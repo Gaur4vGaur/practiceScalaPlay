@@ -3,7 +3,9 @@ package controllers.connect
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import connectors.ApplicationConnection
+import controllers.jsonpost.models.Employee
 import javax.inject.{Inject, Singleton}
+import play.api.libs.json.Json
 import play.api.libs.ws.ahc.AhcWSClient
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 
@@ -22,12 +24,27 @@ class EmployeeController @Inject()(cc: ControllerComponents) extends AbstractCon
   def exposedEmployee: Action[AnyContent] = Action.async {
     implicit request =>
       val wsClient = AhcWSClient()
-
       val ac = new ApplicationConnection(ws = wsClient)
+
       ac.employment
         .andThen { case _ => wsClient.close() }
         .andThen { case _ => system.terminate() }.map { res =>
         Ok("result back from connection  \n\n" + res)
+      }
+  }
+
+  /**
+    * The method to post json to end point
+    * @return success if the post request is successful
+    */
+  def postJson: Action[AnyContent] = Action.async {
+    implicit request =>
+      val wsClient = AhcWSClient()
+      val ac = new ApplicationConnection(ws = wsClient)
+      ac.postEmployment(Json.toJson[Employee](Employee("Gaurav")))
+        .andThen { case _ => wsClient.close() }
+        .andThen { case _ => system.terminate() }.map { res =>
+        Ok("json posted and the result is  \n\n" + res)
       }
   }
 
