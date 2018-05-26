@@ -29,7 +29,8 @@ class EmployeeController @Inject()(cc: ControllerComponents) extends AbstractCon
       ac.employment
         .andThen { case _ => wsClient.close() }
         .andThen { case _ => system.terminate() }.map { res =>
-        Ok("result back from connection  \n\n" + res)
+        val e = Json.parse(res).as[Employee]
+        Ok("result back from connection  \n\n" + res + "\n\n json after parsing \n\n\n" + e)
       }
   }
 
