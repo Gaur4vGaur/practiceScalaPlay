@@ -15,6 +15,10 @@ GET     /employee-expose            controllers.connect.EmployeeController.expos
 GET     /employee-expose/post-json  controllers.connect.EmployeeController.postJson
 
 GET     /add-employee/:name         controllers.mongo.EmployeeController.createEmployee(name: String)
+GET     /mongo-employee/:age        controllers.mongo.EmployeeController.mongoEmployeeWithAge(age: Int)
+GET     /mongo-employees            controllers.mongo.EmployeeController.mongoEmployees
+GET     /mongo-count-emp            controllers.mongo.EmployeeController.mongoEmployeeCount
+GET     /mongo-emp-remove/:age       controllers.mongo.EmployeeController.removeEmployee(age: Int)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
