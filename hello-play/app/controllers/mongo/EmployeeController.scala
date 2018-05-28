@@ -10,14 +10,14 @@ class EmployeeController @Inject() (cc: ControllerComponents, repository: Employ
 
   def createEmployee(name: String): Action[AnyContent] = Action.async{
     implicit request =>
-      repository.addEmployee(Employee(name)).map { result =>
+      repository.addEmployee[Employee](Employee(name)).map { result =>
         Ok(result)
       }
   }
 
   def mongoEmployeeWithAge(age: Int): Action[AnyContent] = Action.async {
     implicit request =>
-      repository.employeeWithAge(age).map {
+      repository.employeeWithAge[Employee](age).map {
         case Some(emp) => Ok(emp.toString)
         case None => Ok("No employee with the age")
       }
@@ -25,7 +25,7 @@ class EmployeeController @Inject() (cc: ControllerComponents, repository: Employ
 
   def mongoEmployees: Action[AnyContent] = Action.async {
     implicit request =>
-      repository.employees.map(emps => Ok(emps.toString))
+      repository.employees[Employee].map(emps => Ok(emps.toString))
   }
 
   def mongoEmployeeCount: Action[AnyContent] = Action.async {
@@ -35,7 +35,7 @@ class EmployeeController @Inject() (cc: ControllerComponents, repository: Employ
 
   def removeEmployee(age: Int): Action[AnyContent] = Action.async {
     implicit request =>
-      repository.remove(age).map {
+      repository.remove[Employee](age).map {
         case Some(emp) => Ok(emp.toString)
         case None => Ok("No employee removed")
       }
@@ -43,7 +43,7 @@ class EmployeeController @Inject() (cc: ControllerComponents, repository: Employ
 
   def ageByTwo(age: Int): Action[AnyContent] = Action.async {
     implicit request =>
-      repository.increaseAgeByTwo(age).map {
+      repository.increaseAgeByTwo[Employee](age).map {
         case Some(emp) => Ok(emp.toString)
         case None => Ok("No employee removed")
       }

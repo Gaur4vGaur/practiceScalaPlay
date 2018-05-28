@@ -24,40 +24,38 @@ object Employee {
 class EmployeeRepository @Inject()(reactiveMongoApi: ReactiveMongoApi) {
   private def collection(implicit ec: ExecutionContext): Future[JSONCollection] = reactiveMongoApi.database.map(_.collection("employee"))
 
-  def addEmployee(emp: Employee)(implicit ec: ExecutionContext): Future[String] = {
-    collection.flatMap(_.insert[Employee](emp)).map { _ =>
+  def addEmployee[T](emp: T)(implicit ec: ExecutionContext, format: OFormat[T]): Future[String] =
+    collection.flatMap(_.insert[T](emp)).map { _ =>
       "Employee created successfully \n" + emp
     }
-  }
 
-  def employeeWithAge(age: Int)(implicit ec: ExecutionContext): Future[Option[Employee]] =
+  def employeeWithAge[T](age: Int)(implicit ec: ExecutionContext, format: OFormat[T]): Future[Option[T]] =
     collection.flatMap(_.find(Json.obj({
       "age" -> age
-    })).one[Employee])
+    })).one[T])
 
-  def employees(implicit ec: ExecutionContext): Future[Seq[Employee]] =
+  def employees[T](implicit ec: ExecutionContext, format: OFormat[T]): Future[Seq[T]] =
     collection.flatMap(_.find(Json.obj())
-      .cursor[Employee]()
-      .collect[Seq](100, Cursor.FailOnError[Seq[Employee]]())
+      .cursor[T]()
+      .collect[Seq](100, Cursor.FailOnError[Seq[T]]())
     )
 
   def countEmployees(implicit ec: ExecutionContext): Future[Int] =
     collection.flatMap(_.count())
 
-  def remove(age: Int)(implicit ec: ExecutionContext): Future[Option[Employee]] =
+  def remove[T](age: Int)(implicit ec: ExecutionContext, format: OFormat[T]): Future[Option[T]] =
     collection.flatMap(_.findAndRemove(Json.obj({
       "age" -> age
-    })).map(_.result[Employee]))
+    })).map(_.result[T]))
 
-  def increaseAgeByTwo(age: Int)(implicit ec: ExecutionContext): Future[Option[Employee]] = {
+  def increaseAgeByTwo[T](age: Int)(implicit ec: ExecutionContext, format: OFormat[T]): Future[Option[T]] = {
     // could be converted to json like other objects
     val selector = BSONDocument("age" -> age)
     val update = BSONDocument(
       "$set" -> BSONDocument("age" -> (age+2))
     )
 
-    collection.flatMap(_.findAndUpdate(selector, update, fetchNewObject = true).map(_.result[Employee]))
+    collection.flatMap(_.findAndUpdate(selector, update, fetchNewObject = true).map(_.result[T]))
   }
-
 
 }
