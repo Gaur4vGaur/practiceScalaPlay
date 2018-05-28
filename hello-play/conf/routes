@@ -13,5 +13,8 @@ POST    /employee-form/submission   controllers.forms.EmployeeController.employe
 
 GET     /employee-expose            controllers.connect.EmployeeController.exposedEmployee
 GET     /employee-expose/post-json  controllers.connect.EmployeeController.postJson
+
+GET     /add-employee/:name         controllers.mongo.EmployeeController.createEmployee(name: String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
