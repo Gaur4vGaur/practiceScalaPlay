@@ -41,4 +41,12 @@ class EmployeeController @Inject() (cc: ControllerComponents, repository: Employ
       }
   }
 
+  def ageByTwo(age: Int): Action[AnyContent] = Action.async {
+    implicit request =>
+      repository.increaseAgeByTwo(age).map {
+        case Some(emp) => Ok(emp.toString)
+        case None => Ok("No employee removed")
+      }
+  }
+
 }

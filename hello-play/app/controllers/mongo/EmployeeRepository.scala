@@ -4,6 +4,7 @@ import javax.inject.Inject
 import play.api.libs.json.{JsObject, Json, OFormat}
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.api.{Cursor, ReadPreference}
+import reactivemongo.bson.BSONDocument
 import reactivemongo.play.json.collection.JSONCollection
 import reactivemongo.play.json._
 
@@ -47,6 +48,16 @@ class EmployeeRepository @Inject()(reactiveMongoApi: ReactiveMongoApi) {
     collection.flatMap(_.findAndRemove(Json.obj({
       "age" -> age
     })).map(_.result[Employee]))
+
+  def increaseAgeByTwo(age: Int)(implicit ec: ExecutionContext): Future[Option[Employee]] = {
+    // could be converted to json like other objects
+    val selector = BSONDocument("age" -> age)
+    val update = BSONDocument(
+      "$set" -> BSONDocument("age" -> (age+2))
+    )
+
+    collection.flatMap(_.findAndUpdate(selector, update, fetchNewObject = true).map(_.result[Employee]))
+  }
 
 
 }
