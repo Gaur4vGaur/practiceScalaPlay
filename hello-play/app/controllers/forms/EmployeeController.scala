@@ -1,14 +1,16 @@
 package controllers.forms
 
-import controllers.forms.models.EmployeeForm
+import controllers.forms.models.{Employee, EmployeeForm}
+import controllers.mongo.EmployeeRepository
 import javax.inject.{Inject, Singleton}
 import play.api.i18n._
 import play.api.mvc._
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class EmployeeController @Inject()(cc: ControllerComponents) extends AbstractController(cc) with I18nSupport {
+class EmployeeController @Inject()(cc: ControllerComponents, repository: EmployeeRepository) extends AbstractController(cc) with I18nSupport {
 
   /**
     * Creates user form
@@ -20,7 +22,7 @@ class EmployeeController @Inject()(cc: ControllerComponents) extends AbstractCon
   }
 
   /**
-    * Binds user forms input to model
+    * Binds user forms input to model and persist it into mongo
     * @return success response if binding is successful
     */
   def employeeDetailsSubmission(): Action[AnyContent] = Action.async {
@@ -30,7 +32,9 @@ class EmployeeController @Inject()(cc: ControllerComponents) extends AbstractCon
           Future.successful(BadRequest(views.html.employeeForm(formWithErrors)))
         },
         employeeData => {
-          Future.successful(Ok("date we have received is " + employeeData.name + " " + employeeData.age))
+          repository.addEmployee[Employee](employeeData).map { result =>
+            Ok("data we have received is \n" + result)
+          }
         }
       )
   }
